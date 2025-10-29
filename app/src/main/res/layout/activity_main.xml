@@ -1,49 +1,180 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context="ch.heigvd.iict.daa.labo3.MainActivity">
 
-    <!-- Barre d'action -->
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appbarlayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary" />
-
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <!-- Contenu -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/appcontent"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/appbarlayout"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp">
 
-        <!-- change me -->
-        <TextView
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/welcome"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.4"
+        />
+
+        <TextView
+            android:id="@+id/text_view_base_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/main_base_title"
+            android:textAllCaps="true"
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+        />
+
+        <!-- NOM -->
+        <TextView
+            android:id="@+id/text_view_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/main_base_name_title"
+            app:layout_constraintBottom_toBottomOf="@id/edit_text_name"
+            app:layout_constraintEnd_toStartOf="@id/guideline"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/edit_text_name"
+            />
+
+        <EditText
+            android:id="@+id/edit_text_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:autofillHints="@string/main_base_name_title"
+            android:hint="@string/main_base_name_title"
+            android:inputType="textPersonName"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/guideline"
+            app:layout_constraintTop_toBottomOf="@id/text_view_base_data"
+            />
+
+        <!-- Prénom -->
+        <TextView
+            android:id="@+id/text_view_surname"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/main_base_firstname_title"
+            app:layout_constraintBottom_toBottomOf="@id/edit_text_surname"
+            app:layout_constraintEnd_toStartOf="@id/guideline"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/edit_text_surname"
+            />
+
+        <EditText
+            android:id="@+id/edit_text_surname"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:autofillHints="@string/main_base_firstname_title"
+            android:hint="@string/main_base_firstname_title"
+            android:inputType="textPersonName"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/guideline"
+            app:layout_constraintTop_toBottomOf="@id/edit_text_name"
+            />
+
+        <!-- Birth Date -->
+        <TextView
+            android:id="@+id/birthdate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/main_base_birthdate_title"
+            app:layout_constraintBottom_toBottomOf="@id/edit_text_birthdate"
+            app:layout_constraintEnd_toStartOf="@id/guideline"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/edit_text_birthdate"
+            />
+
+        <EditText
+            android:id="@+id/edit_text_birthdate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:autofillHints="@string/main_base_birthdate_title"
+            android:clickable="false"
+            android:cursorVisible="false"
+            android:focusable="false"
+            android:hint="@string/main_base_birthdate_title"
+            android:inputType="date"
+            app:layout_constraintStart_toStartOf="@+id/guideline"
+            app:layout_constraintTop_toBottomOf="@id/edit_text_surname"
+            />
+
+        <ImageButton
+            android:id="@+id/image_button_cake"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/main_base_birthdate_title"
+            android:src="@drawable/cake"
+            app:layout_constraintBottom_toBottomOf="@id/edit_text_birthdate"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/edit_text_birthdate"
+            app:layout_constraintTop_toTopOf="@id/edit_text_birthdate"
+        />
+
+        <!-- Nationality -->
+        <TextView
+            android:id="@+id/text_view_nationality"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/main_base_nationality_title"
+            app:layout_constraintBottom_toBottomOf="@id/spinner_nationality"
+            app:layout_constraintEnd_toStartOf="@id/guideline"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/spinner_nationality"
+        />
+
+        <Spinner
+            android:id="@+id/spinner_nationality"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/guideline"
+            app:layout_constraintTop_toBottomOf="@id/edit_text_birthdate"
+        />
+
+        <TextView
+            android:id="@+id/text_view_occupation"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/main_base_occupation_title"
+            app:layout_constraintEnd_toEndOf="@id/guideline"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/spinner_nationality"
+        />
+        <RadioGroup
+            android:id="@+id/radio_group_occupation"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/text_view_occupation">
+            <RadioButton
+                android:id="@+id/radio_button_student"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/main_base_occupation_student"
+                android:checked="false"
+            />
+            <RadioButton
+                android:id="@+id/radio_button_worker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/main_base_occupation_worker"
+                android:checked="false"
+            />
+        </RadioGroup>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
