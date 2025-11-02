@@ -58,10 +58,6 @@ val dateSetListener = DatePickerDialog.OnDateSetListener { _, year, month, dayOf
 ```
 
 ### 4.3
-Veuillez choisir une question en fonction de votre choix d’implémentation :
-a. Si vous avez utilisé le DatePickerDialog1 du SDK. En cas de rotation de l’écran du smartphone lorsque le dialogue est ouvert, 
+Si vous avez utilisé le DatePickerDialog du SDK. En cas de rotation de l’écran du smartphone lorsque le dialogue est ouvert, 
 une exception android.view.WindowLeaked sera présente dans les logs, 
 à quoi est-elle due et comment pouvons-nous la corriger ?
-b. Si vous avez utilisé le MaterialDatePicker2 de la librairie Material. Est-il possible de limiter les dates sélectionnables dans le dialogue ? 
-Ceci en particulier pour une date de naissance car il est peu probable d’avoir une personne née il y a plus de 110 ans ou à une date dans le futur. 
-Comment pouvons-nous mettre cela en place ?
