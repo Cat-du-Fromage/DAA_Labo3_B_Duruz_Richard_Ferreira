@@ -11,6 +11,7 @@ import androidx.core.view.WindowInsetsCompat
 import java.text.SimpleDateFormat
 import java.util.*
 import android.util.Log
+import android.view.inputmethod.EditorInfo
 import ch.heigvd.iict.daa.labo3.model.Person
 import ch.heigvd.iict.daa.labo3.model.Student
 import ch.heigvd.iict.daa.labo3.model.Worker
@@ -19,6 +20,8 @@ import ch.heigvd.iict.daa.labo3.model.Worker
 class MainActivity : AppCompatActivity() {
 
     private val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+
+    private lateinit var datePickerDialog : DatePickerDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,14 +94,16 @@ class MainActivity : AppCompatActivity() {
             editBirthdate.setText(dateFormat.format(cal.time))
         }
 
+        datePickerDialog = DatePickerDialog(
+            this,
+            dateSetListener,
+            cal.get(Calendar.YEAR),
+            cal.get(Calendar.MONTH),
+            cal.get(Calendar.DAY_OF_MONTH)
+        )
+
         fun showDatePicker() {
-            DatePickerDialog(
-                this,
-                dateSetListener,
-                cal.get(Calendar.YEAR),
-                cal.get(Calendar.MONTH),
-                cal.get(Calendar.DAY_OF_MONTH)
-            ).show()
+            datePickerDialog.show()
         }
 
         editBirthdate.setOnClickListener { showDatePicker() }
@@ -224,6 +229,11 @@ class MainActivity : AppCompatActivity() {
             val email = findViewById<EditText>(R.id.edit_text_address).text.toString().trim()
             val remark = findViewById<EditText>(R.id.edit_text_comments).text.toString().trim()
 
+            if (nationality == getString(R.string.nationality_empty)) {
+                Toast.makeText(this, "Veuillez choisir une nationalité", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
             if (name.isEmpty() || surname.isEmpty() || birthdateStr.isEmpty()) {
                 Toast.makeText(this, "Nom, prénom et date de naissance requis", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
@@ -248,6 +258,12 @@ class MainActivity : AppCompatActivity() {
                     val company = editWorkerCompany.text.toString()
                     val experience = editWorkerExperience.text.toString().toIntOrNull() ?: 0
                     val sector = spinnerWorkerSector.selectedItem.toString()
+
+                    if (sector == getString(R.string.sectors_empty)) {
+                        Toast.makeText(this, "Choisissez un secteur", Toast.LENGTH_SHORT).show()
+                        return@setOnClickListener
+                    }
+
                     Worker(name, surname, birthdate, nationality, company, sector, experience, email, remark)
                 }
                 else -> {
@@ -258,6 +274,29 @@ class MainActivity : AppCompatActivity() {
 
             Log.i("MainActivity", person.toString())
             Toast.makeText(this, "Créé: ${person::class.simpleName}", Toast.LENGTH_SHORT).show()
+        }
+
+        findViewById<EditText>(R.id.edit_text_address).setOnEditorActionListener { v, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_GO) {
+                buttonOk.performClick()
+                true
+            } else {
+                false
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (datePickerDialog.isShowing) {
+            datePickerDialog.dismiss()
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (datePickerDialog.isShowing) {
+            datePickerDialog.dismiss()
         }
     }
 }
