@@ -16,7 +16,13 @@ import ch.heigvd.iict.daa.labo3.model.Person
 import ch.heigvd.iict.daa.labo3.model.Student
 import ch.heigvd.iict.daa.labo3.model.Worker
 
-
+/**
+ * Activité principale de l'application
+ *
+ * @author Duruz Florian
+ * @author Ferreira Silva Sven
+ * @author Richard Aurélien
+ */
 class MainActivity : AppCompatActivity() {
 
     private val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
@@ -108,8 +114,10 @@ class MainActivity : AppCompatActivity() {
 
         editBirthdate.setOnClickListener { showDatePicker() }
         imageCake.setOnClickListener { showDatePicker() }
-
-        // --- Show / hide student or worker fields ---
+        
+        /**
+         * Show student Field and Hide worker field
+         */
         fun showStudent() {
             textStudentTitle.visibility = View.VISIBLE
             textStudentYear.visibility = View.VISIBLE
@@ -129,6 +137,9 @@ class MainActivity : AppCompatActivity() {
             editWorkerExperience.text.clear()
         }
 
+        /**
+         * Show worker Field and Hide student field
+         */
         fun showWorker() {
             textWorkerTitle.visibility = View.VISIBLE
             textWorkerCompany.visibility = View.VISIBLE
@@ -148,6 +159,9 @@ class MainActivity : AppCompatActivity() {
             editStudentSchool.text.clear()
         }
 
+        /**
+         * Hide worker Field and Hide student field
+         */
         fun hideBoth() {
             textStudentTitle.visibility = View.GONE
             textStudentYear.visibility = View.GONE
@@ -175,6 +189,9 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        /**
+         * Populate field depending on the type of person selected
+         */
         fun populateView(person: Person) {
             findViewById<EditText>(R.id.edit_text_name).setText(person.name)
             findViewById<EditText>(R.id.edit_text_surname).setText(person.firstName)
