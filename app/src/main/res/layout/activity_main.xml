@@ -261,6 +261,16 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/edit_text_student_school" />
 
+            <!-- STUDENT GROUP -->
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/group_student"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="text_student_title,
+                    text_view_student_school,edit_text_student_school,
+                    text_view_student_year,edit_text_student_year"
+                android:visibility="gone" />
+
             <!-- Worker section -->
             <TextView
                 android:id="@+id/text_worker_title"
@@ -344,6 +354,17 @@
                 app:layout_constraintStart_toStartOf="@id/guideline"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/spinner_worker_sector" />
+
+            <!-- WORKER GROUP -->
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/group_worker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="text_worker_title,
+                    text_view_worker_company,edit_text_worker_company,
+                    text_view_worker_experience,edit_text_worker_experience,
+                    text_view_worker_sector,spinner_worker_sector"
+                android:visibility="gone" />
 
             <!-- Barrier -->
             <androidx.constraintlayout.widget.Barrier
