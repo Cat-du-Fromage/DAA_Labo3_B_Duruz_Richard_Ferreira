@@ -382,6 +382,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/additional_email_title"
                 android:inputType="textEmailAddress"
+                android:imeOptions="actionGo"
                 app:layout_constraintStart_toStartOf="@id/guideline"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/text_complementary_data_title" />
