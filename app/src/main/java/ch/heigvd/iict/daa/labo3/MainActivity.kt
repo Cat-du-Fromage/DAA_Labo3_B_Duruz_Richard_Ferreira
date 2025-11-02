@@ -2,94 +2,40 @@ package ch.heigvd.iict.daa.labo3
 
 import android.app.DatePickerDialog
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import android.widget.*
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import java.text.SimpleDateFormat
-import java.util.*
-import android.util.Log
-import android.view.inputmethod.EditorInfo
+import ch.heigvd.iict.daa.labo3.databinding.ActivityMainBinding
 import ch.heigvd.iict.daa.labo3.model.Person
 import ch.heigvd.iict.daa.labo3.model.Student
 import ch.heigvd.iict.daa.labo3.model.Worker
+import java.text.SimpleDateFormat
+import java.util.*
 
-/**
- * Activité principale de l'application
- *
- * @author Duruz Florian
- * @author Ferreira Silva Sven
- * @author Richard Aurélien
- */
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityMainBinding
     private val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
-
-    private lateinit var datePickerDialog : DatePickerDialog
+    private lateinit var datePickerDialog: DatePickerDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         enableEdgeToEdge()
-        setContentView(R.layout.activity_main)
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+        // ✅ Inflate the binding
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
-        // --- Views ---
-        val radioGroupOccupation = findViewById<RadioGroup>(R.id.radio_group_occupation)
-        val radioStudent = findViewById<RadioButton>(R.id.radio_button_student)
-        val radioWorker = findViewById<RadioButton>(R.id.radio_button_worker)
-
-        // Student fields
-        val textStudentTitle = findViewById<TextView>(R.id.text_student_title)
-        val textStudentYear = findViewById<TextView>(R.id.text_view_student_year)
-        val editStudentYear = findViewById<EditText>(R.id.edit_text_student_year)
-        val textStudentSchool = findViewById<TextView>(R.id.text_view_student_school)
-        val editStudentSchool = findViewById<EditText>(R.id.edit_text_student_school)
-
-        // Worker fields
-        val textWorkerTitle = findViewById<TextView>(R.id.text_worker_title)
-        val textWorkerCompany = findViewById<TextView>(R.id.text_view_worker_company)
-        val editWorkerCompany = findViewById<EditText>(R.id.edit_text_worker_company)
-        val textWorkerExperience = findViewById<TextView>(R.id.text_view_worker_experience)
-        val editWorkerExperience = findViewById<EditText>(R.id.edit_text_worker_experience)
-        val textWorkerSector = findViewById<TextView>(R.id.text_view_worker_sector)
-        val spinnerWorkerSector = findViewById<Spinner>(R.id.spinner_worker_sector)
-
-        val sectorAdapter = ArrayAdapter.createFromResource(
-            this,
-            R.array.sectors,
-            android.R.layout.simple_spinner_item
-        )
-        sectorAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinnerWorkerSector.adapter = sectorAdapter
-
-
-
-        val editBirthdate = findViewById<EditText>(R.id.edit_text_birthdate)
-        val imageCake = findViewById<ImageButton>(R.id.image_button_cake)
-
-        val buttonCancel = findViewById<Button>(R.id.button_cancel)
-        val buttonOk = findViewById<Button>(R.id.button_ok)
-
-        val spinnerNationality = findViewById<Spinner>(R.id.spinner_nationality)
-
-        val adapter = ArrayAdapter.createFromResource(
-            this,
-            R.array.nationalities,
-            android.R.layout.simple_spinner_item
-        )
-
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-
-        spinnerNationality.adapter = adapter
-
 
         // --- DatePicker ---
         val cal = Calendar.getInstance()
@@ -97,7 +43,7 @@ class MainActivity : AppCompatActivity() {
             cal.set(Calendar.YEAR, year)
             cal.set(Calendar.MONTH, month)
             cal.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-            editBirthdate.setText(dateFormat.format(cal.time))
+            binding.editTextBirthdate.setText(dateFormat.format(cal.time))
         }
 
         datePickerDialog = DatePickerDialog(
@@ -108,80 +54,89 @@ class MainActivity : AppCompatActivity() {
             cal.get(Calendar.DAY_OF_MONTH)
         )
 
-        fun showDatePicker() {
-            datePickerDialog.show()
-        }
+        fun showDatePicker() = datePickerDialog.show()
+        binding.editTextBirthdate.setOnClickListener { showDatePicker() }
+        binding.imageButtonCake.setOnClickListener { showDatePicker() }
 
-        editBirthdate.setOnClickListener { showDatePicker() }
-        imageCake.setOnClickListener { showDatePicker() }
-        
-        /**
-         * Show student Field and Hide worker field
-         */
+        // --- Spinners ---
+        val nationalityAdapter = ArrayAdapter.createFromResource(
+            this, R.array.nationalities, android.R.layout.simple_spinner_item
+        ).apply {
+            setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        }
+        binding.spinnerNationality.adapter = nationalityAdapter
+
+        val sectorAdapter = ArrayAdapter.createFromResource(
+            this, R.array.sectors, android.R.layout.simple_spinner_item
+        ).apply {
+            setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        }
+        binding.spinnerWorkerSector.adapter = sectorAdapter
+
+        // --- RadioGroup logic ---
         fun showStudent() {
-            textStudentTitle.visibility = View.VISIBLE
-            textStudentYear.visibility = View.VISIBLE
-            editStudentYear.visibility = View.VISIBLE
-            textStudentSchool.visibility = View.VISIBLE
-            editStudentSchool.visibility = View.VISIBLE
+            binding.apply {
+                textStudentTitle.visibility = View.VISIBLE
+                textViewStudentYear.visibility = View.VISIBLE
+                editTextStudentYear.visibility = View.VISIBLE
+                textViewStudentSchool.visibility = View.VISIBLE
+                editTextStudentSchool.visibility = View.VISIBLE
 
-            textWorkerTitle.visibility = View.GONE
-            textWorkerCompany.visibility = View.GONE
-            editWorkerCompany.visibility = View.GONE
-            textWorkerExperience.visibility = View.GONE
-            editWorkerExperience.visibility = View.GONE
-            textWorkerSector.visibility = View.GONE
-            spinnerWorkerSector.visibility = View.GONE
+                textWorkerTitle.visibility = View.GONE
+                textViewWorkerCompany.visibility = View.GONE
+                editTextWorkerCompany.visibility = View.GONE
+                textViewWorkerExperience.visibility = View.GONE
+                editTextWorkerExperience.visibility = View.GONE
+                textViewWorkerSector.visibility = View.GONE
+                spinnerWorkerSector.visibility = View.GONE
 
-            editWorkerCompany.text.clear()
-            editWorkerExperience.text.clear()
+                editTextWorkerCompany.text.clear()
+                editTextWorkerExperience.text.clear()
+            }
         }
 
-        /**
-         * Show worker Field and Hide student field
-         */
         fun showWorker() {
-            textWorkerTitle.visibility = View.VISIBLE
-            textWorkerCompany.visibility = View.VISIBLE
-            editWorkerCompany.visibility = View.VISIBLE
-            textWorkerExperience.visibility = View.VISIBLE
-            editWorkerExperience.visibility = View.VISIBLE
-            textWorkerSector.visibility = View.VISIBLE
-            spinnerWorkerSector.visibility = View.VISIBLE
+            binding.apply {
+                textWorkerTitle.visibility = View.VISIBLE
+                textViewWorkerCompany.visibility = View.VISIBLE
+                editTextWorkerCompany.visibility = View.VISIBLE
+                textViewWorkerExperience.visibility = View.VISIBLE
+                editTextWorkerExperience.visibility = View.VISIBLE
+                textViewWorkerSector.visibility = View.VISIBLE
+                spinnerWorkerSector.visibility = View.VISIBLE
 
-            textStudentTitle.visibility = View.GONE
-            textStudentYear.visibility = View.GONE
-            editStudentYear.visibility = View.GONE
-            textStudentSchool.visibility = View.GONE
-            editStudentSchool.visibility = View.GONE
+                textStudentTitle.visibility = View.GONE
+                textViewStudentYear.visibility = View.GONE
+                editTextStudentYear.visibility = View.GONE
+                textViewStudentSchool.visibility = View.GONE
+                editTextStudentSchool.visibility = View.GONE
 
-            editStudentYear.text.clear()
-            editStudentSchool.text.clear()
+                editTextStudentYear.text.clear()
+                editTextStudentSchool.text.clear()
+            }
         }
 
-        /**
-         * Hide worker Field and Hide student field
-         */
         fun hideBoth() {
-            textStudentTitle.visibility = View.GONE
-            textStudentYear.visibility = View.GONE
-            editStudentYear.visibility = View.GONE
-            textStudentSchool.visibility = View.GONE
-            editStudentSchool.visibility = View.GONE
+            binding.apply {
+                textStudentTitle.visibility = View.GONE
+                textViewStudentYear.visibility = View.GONE
+                editTextStudentYear.visibility = View.GONE
+                textViewStudentSchool.visibility = View.GONE
+                editTextStudentSchool.visibility = View.GONE
 
-            textWorkerTitle.visibility = View.GONE
-            textWorkerCompany.visibility = View.GONE
-            editWorkerCompany.visibility = View.GONE
-            textWorkerExperience.visibility = View.GONE
-            editWorkerExperience.visibility = View.GONE
-            textWorkerSector.visibility = View.GONE
-            spinnerWorkerSector.visibility = View.GONE
+                textWorkerTitle.visibility = View.GONE
+                textViewWorkerCompany.visibility = View.GONE
+                editTextWorkerCompany.visibility = View.GONE
+                textViewWorkerExperience.visibility = View.GONE
+                editTextWorkerExperience.visibility = View.GONE
+                textViewWorkerSector.visibility = View.GONE
+                spinnerWorkerSector.visibility = View.GONE
+            }
         }
 
-        // initial state: hide all
         hideBoth()
 
-        radioGroupOccupation.setOnCheckedChangeListener { _, checkedId ->
+        binding.radioGroupOccupation.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
                 R.id.radio_button_student -> showStudent()
                 R.id.radio_button_worker -> showWorker()
@@ -189,62 +144,64 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        /**
-         * Populate field depending on the type of person selected
-         */
+        // --- Populate example ---
         fun populateView(person: Person) {
-            findViewById<EditText>(R.id.edit_text_name).setText(person.name)
-            findViewById<EditText>(R.id.edit_text_surname).setText(person.firstName)
-            findViewById<EditText>(R.id.edit_text_birthdate).setText(Person.dateFormatter.format(person.birthDay.time))
-            findViewById<Spinner>(R.id.spinner_nationality).setSelection(
-                (0 until spinnerNationality.adapter.count).firstOrNull {
-                    spinnerNationality.adapter.getItem(it).toString() == person.nationality
-                } ?: 0
-            )
-            findViewById<EditText>(R.id.edit_text_address).setText(person.email)
-            findViewById<EditText>(R.id.edit_text_comments).setText(person.remark)
+            binding.apply {
+                editTextName.setText(person.name)
+                editTextSurname.setText(person.firstName)
+                editTextBirthdate.setText(Person.dateFormatter.format(person.birthDay.time))
+                spinnerNationality.setSelection(
+                    (0 until spinnerNationality.adapter.count).firstOrNull {
+                        spinnerNationality.adapter.getItem(it).toString() == person.nationality
+                    } ?: 0
+                )
+                editTextAddress.setText(person.email)
+                editTextComments.setText(person.remark)
+            }
 
             when (person) {
                 is Student -> {
-                    radioGroupOccupation.check(R.id.radio_button_student)
+                    binding.radioGroupOccupation.check(R.id.radio_button_student)
                     showStudent()
-                    editStudentSchool.setText(person.university)
-                    editStudentYear.setText(person.graduationYear.toString())
+                    binding.editTextStudentSchool.setText(person.university)
+                    binding.editTextStudentYear.setText(person.graduationYear.toString())
                 }
                 is Worker -> {
-                    radioGroupOccupation.check(R.id.radio_button_worker)
+                    binding.radioGroupOccupation.check(R.id.radio_button_worker)
                     showWorker()
-                    editWorkerCompany.setText(person.company)
-                    editWorkerExperience.setText(person.experienceYear.toString())
-                    spinnerWorkerSector.setSelection(
-                        (0 until spinnerWorkerSector.adapter.count).firstOrNull {
-                            spinnerWorkerSector.adapter.getItem(it).toString() == person.sector
+                    binding.editTextWorkerCompany.setText(person.company)
+                    binding.editTextWorkerExperience.setText(person.experienceYear.toString())
+                    binding.spinnerWorkerSector.setSelection(
+                        (0 until binding.spinnerWorkerSector.adapter.count).firstOrNull {
+                            binding.spinnerWorkerSector.adapter.getItem(it).toString() == person.sector
                         } ?: 0
                     )
                 }
             }
         }
 
-        populateView(Person.exampleStudent) // or Person.exampleWorker
+        populateView(Person.exampleStudent)
 
         // --- Buttons ---
-        buttonCancel.setOnClickListener {
-            findViewById<EditText>(R.id.edit_text_name).text.clear()
-            findViewById<EditText>(R.id.edit_text_surname).text.clear()
-            editBirthdate.text.clear()
-            findViewById<Spinner>(R.id.spinner_nationality).setSelection(0)
-            radioGroupOccupation.clearCheck()
+        binding.buttonCancel.setOnClickListener {
+            binding.apply {
+                editTextName.text.clear()
+                editTextSurname.text.clear()
+                editTextBirthdate.text.clear()
+                spinnerNationality.setSelection(0)
+                radioGroupOccupation.clearCheck()
+            }
             hideBoth()
             Toast.makeText(this, "Formulaire réinitialisé", Toast.LENGTH_SHORT).show()
         }
 
-        buttonOk.setOnClickListener {
-            val name = findViewById<EditText>(R.id.edit_text_name).text.toString().trim()
-            val surname = findViewById<EditText>(R.id.edit_text_surname).text.toString().trim()
-            val birthdateStr = editBirthdate.text.toString().trim()
-            val nationality = spinnerNationality.selectedItem.toString()
-            val email = findViewById<EditText>(R.id.edit_text_address).text.toString().trim()
-            val remark = findViewById<EditText>(R.id.edit_text_comments).text.toString().trim()
+        binding.buttonOk.setOnClickListener {
+            val name = binding.editTextName.text.toString().trim()
+            val surname = binding.editTextSurname.text.toString().trim()
+            val birthdateStr = binding.editTextBirthdate.text.toString().trim()
+            val nationality = binding.spinnerNationality.selectedItem.toString()
+            val email = binding.editTextAddress.text.toString().trim()
+            val remark = binding.editTextComments.text.toString().trim()
 
             if (nationality == getString(R.string.nationality_empty)) {
                 Toast.makeText(this, "Veuillez choisir une nationalité", Toast.LENGTH_SHORT).show()
@@ -264,17 +221,17 @@ class MainActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            val checkedId = radioGroupOccupation.checkedRadioButtonId
+            val checkedId = binding.radioGroupOccupation.checkedRadioButtonId
             val person: Person = when (checkedId) {
                 R.id.radio_button_student -> {
-                    val university = editStudentSchool.text.toString()
-                    val graduationYear = editStudentYear.text.toString().toIntOrNull() ?: 0
+                    val university = binding.editTextStudentSchool.text.toString()
+                    val graduationYear = binding.editTextStudentYear.text.toString().toIntOrNull() ?: 0
                     Student(name, surname, birthdate, nationality, university, graduationYear, email, remark)
                 }
                 R.id.radio_button_worker -> {
-                    val company = editWorkerCompany.text.toString()
-                    val experience = editWorkerExperience.text.toString().toIntOrNull() ?: 0
-                    val sector = spinnerWorkerSector.selectedItem.toString()
+                    val company = binding.editTextWorkerCompany.text.toString()
+                    val experience = binding.editTextWorkerExperience.text.toString().toIntOrNull() ?: 0
+                    val sector = binding.spinnerWorkerSector.selectedItem.toString()
 
                     if (sector == getString(R.string.sectors_empty)) {
                         Toast.makeText(this, "Choisissez un secteur", Toast.LENGTH_SHORT).show()
@@ -293,9 +250,9 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "Créé: ${person::class.simpleName}", Toast.LENGTH_SHORT).show()
         }
 
-        findViewById<EditText>(R.id.edit_text_address).setOnEditorActionListener { v, actionId, event ->
+        binding.editTextAddress.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_GO) {
-                buttonOk.performClick()
+                binding.buttonOk.performClick()
                 true
             } else {
                 false
@@ -305,15 +262,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        if (datePickerDialog.isShowing) {
-            datePickerDialog.dismiss()
-        }
+        if (datePickerDialog.isShowing) datePickerDialog.dismiss()
     }
 
     override fun onPause() {
         super.onPause()
-        if (datePickerDialog.isShowing) {
-            datePickerDialog.dismiss()
-        }
+        if (datePickerDialog.isShowing) datePickerDialog.dismiss()
     }
 }
