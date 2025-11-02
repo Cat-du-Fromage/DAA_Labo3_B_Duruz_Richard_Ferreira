@@ -11,6 +11,86 @@ Classe : DAA 2025-26
 
 Date : 02/11/2025
 
+## Implémentation
+### Layout
+Les composants visuels ajoutés sont tous dans un seul `ConstraintLayout` contenu dans une `ScrollView` (pour permettre d'afficher tout le contenu en scrollant si l'écran est trop petit par exemple).
+
+#### Group
+Pour gérer l'affichage/apparition des champs pour `worker` ou `student` nous avons ajoutés un Contstraint Group pour chacun.
+
+Ex : 
+```xml
+<androidx.constraintlayout.widget.Group
+                android:id="@+id/group_student"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="text_student_title,
+                    text_view_student_school,edit_text_student_school,
+                    text_view_student_year,edit_text_student_year"
+                android:visibility="gone" />
+```
+Cela va permettre de regouper tous les ids lié à une occupation et donc d'avoir la possibité de tous les affecter avec une seule ligne de code (au lieu d'une ligne par champs à cacher/montrer).
+```kotlin
+binding.groupStudent.visibility = Group.VISIBLE
+binding.groupWorker.visibility = Group.GONE
+```
+
+#### Barrier
+Dans un ``ConstraintLayout``, les vues sont positionnées relativement à d’autres vues et nous voulons que la TextView “DONNÉES COMPLÉMENTAIRES” apparaisse en dessous du dernier champ de worker ou student.
+
+Malheureusement une contrainte standard ne peut référencer qu’une seule vue. Pour gérer plusieurs vues de référence, nous introduisons une ``Barrier``.
+
+Une Barrier est une vue invisible qui s’adapte automatiquement à la position de ses vues référencées et permet d’aligner d’autres vues par rapport à elle. Ici, nous définissons une Barrier qui se positionne sous le dernier champ visible parmi ``edit_text_student_year`` et ``edit_text_worker_experience``. Ensuite, la TextView “DONNÉES COMPLÉMENTAIRES” est attachée à cette Barrier, garantissant qu’elle s’affiche toujours après le dernier champ actif.
+
+```xml
+<androidx.constraintlayout.widget.Barrier
+    android:id="@+id/barrier_after_worker_student"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:barrierDirection="bottom"
+    app:constraint_referenced_ids="edit_text_student_year,edit_text_worker_experience"/>
+```
+
+#### Guideline
+Afin d'avoir une UI consistante nous avons introduit une `Guideline` qui va permettre d'aligner les chmpas sur cette dernière.
+```xml
+<androidx.constraintlayout.widget.Guideline
+    android:id="@+id/guideline"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    app:layout_constraintGuide_percent="0.4" />
+```
+
+Cette guideline va être une ligne vericale invisible à 40% de la largeur. Elle est ensuite utilisée par les champs pour s'aligner dessus:
+```xml
+<TextView
+    android:id="@+id/text_view_name"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:text="@string/main_base_name_title"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toStartOf="@id/guideline" //On y fait reference ici
+    app:layout_constraintTop_toBottomOf="@id/text_view_base_data"
+    app:layout_constraintBottom_toBottomOf="@id/edit_text_name" />
+```
+### Controller
+
+#### Initialisation de la vue avec une Person
+Afin d'initialiser la vu avec une personne déjà existante la fonction `populateView()` fut créé. Elle prend en paramêtre une `Person` et va mettre à jour la valeur des champs avec la valeur de la personne.
+
+Il y'a aussi un switch en fonction du type de `Person` (`Worker` ou `Student` par exemple) pour populer certains champs !
+
+#### Création de Student ou Worker
+Pour créer un Student ou Worker depuis le formulaire nous avons un bouton qui va appeler `validateForm()`.
+
+La fonction va valider les champs "importants" et retourner une erreur si tel n'est pas le cas. Si des champs sont manquants ou faux alors un message d'erreur va informer l'utilisateur.
+
+Si tout passe alors nous instancions un nouveau Student ou Worker en fonction de l'occupation choisie.
+
+#### Suppression du contenu du formulaire
+Afin de supprimer tout le contenu présent dans le formulaire le bouton `Cancel` va `clear` tous les champs text et remettre à 0 les spinner.
+
 ## Réponse aux questions
 
 ### 4.1
@@ -45,7 +125,7 @@ Comment peut-on gérer cela au mieux ?
 Pour gérer l'affichage des dates selon la langue et la région on utilise la classe "DateFormat" fournie par Android
 qui va ajuster le format de la date aux conventions locales.
 ```kotlin
-private val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+private val dateFormat = SimpleDateFormat("MMM d, yyyy", Locale.getDefault())
 
 val cal = Calendar.getInstance()
 val dateSetListener = DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
