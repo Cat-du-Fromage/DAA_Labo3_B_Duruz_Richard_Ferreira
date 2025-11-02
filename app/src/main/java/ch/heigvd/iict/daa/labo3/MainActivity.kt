@@ -3,7 +3,6 @@ package ch.heigvd.iict.daa.labo3
 import android.app.DatePickerDialog
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.*
 import androidx.activity.enableEdgeToEdge
@@ -17,6 +16,14 @@ import ch.heigvd.iict.daa.labo3.model.Student
 import ch.heigvd.iict.daa.labo3.model.Worker
 import java.text.SimpleDateFormat
 import java.util.*
+
+/**
+ * Activité principale de l'application
+ *
+ * @author Duruz Florian
+ * @author Ferreira Silva Sven
+ * @author Richard Aurélien
+ */
 
 class MainActivity : AppCompatActivity() {
 
